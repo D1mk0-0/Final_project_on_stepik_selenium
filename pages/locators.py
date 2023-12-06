@@ -4,7 +4,5 @@ class MainPageLocators():
     LOGIN_LINK = (By.CSS_SELECTOR, '#login_link')
 
 class LoginPageLocators():
-    # Красный локатор
-    LOGIN_FORM = (By.CSS_SELECTOR, '#login_form1')
-    # Красный локатор
-    REGISTER_FORM = (By.CSS_SELECTOR, '#register_form1')
+    LOGIN_FORM = (By.CSS_SELECTOR, '#login_form')
+    REGISTER_FORM = (By.CSS_SELECTOR, '#register_form')
