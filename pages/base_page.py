@@ -46,7 +46,7 @@ class BasePage():
         alert.send_keys(answer)
         alert.accept()
         # Нестабильное время ожидания второго alert-окна
-        WebDriverWait(self.browser, 999).until(
+        WebDriverWait(self.browser, 30).until(
             EC.alert_is_present())
         try:
             alert = self.browser.switch_to.alert
