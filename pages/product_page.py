@@ -41,6 +41,14 @@ class ProductPage(BasePage):
         assert self.get_text_of_element(*ProductPageLocators.BASKET_SUM) == self.preview_product_price, \
             f'Сумма товаров в корзине отличается от цены добавленного товара: {self.preview_product_price}'
 
+    def should_not_be_success_message(self):
+        assert self.is_not_element_present(*ProductPageLocators.SUCCESS_MESSAGE), \
+            'Сообщение об успехе присутствует, хотя его не должно быть'
+
+    def should_disappear_success_message(self):
+        assert self.is_disappeared(*ProductPageLocators.SUCCESS_MESSAGE), \
+            'Сообщение об успехе присутствует, хотя его не должно быть'
+
 
 
 
