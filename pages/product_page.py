@@ -11,6 +11,18 @@ class ProductPage(BasePage):
         self.should_be_product_price()
         self.should_be_add_to_basket_button()
 
+    def should_be_send_add_to_basket(self):
+        self.should_be_send_product_name()
+        self.should_be_send_basket_price()
+
+    def add_to_basket(self):
+        add_to_basket = self.browser.find_element(*ProductPageLocators.ADD_TO_BASKET_BUTTON)
+        add_to_basket.click()
+
+    def save_name_and_price_product(self):
+        self.preview_product_name = self.get_text_of_element(*ProductPageLocators.PRODUCT_NAME)
+        self.preview_product_price = self.get_text_of_element(*ProductPageLocators.PRODUCT_PRICE)
+
     def should_be_product_name(self):
         assert self.is_element_present(*ProductPageLocators.PRODUCT_NAME), 'Наименование продукта не найдено'
 
@@ -19,19 +31,6 @@ class ProductPage(BasePage):
 
     def should_be_add_to_basket_button(self):
         assert self.is_element_present(*ProductPageLocators.ADD_TO_BASKET_BUTTON), 'Кнопка "Добавить в корзину" не найдена'
-
-
-    def save_name_and_price_product(self):
-        self.preview_product_name = self.get_text_of_element(*ProductPageLocators.PRODUCT_NAME)
-        self.preview_product_price = self.get_text_of_element(*ProductPageLocators.PRODUCT_PRICE)
-
-    def add_to_basket(self):
-        add_to_basket = self.browser.find_element(*ProductPageLocators.ADD_TO_BASKET_BUTTON)
-        add_to_basket.click()
-
-    def should_be_send_add_to_basket(self):
-        self.should_be_send_product_name()
-        self.should_be_send_basket_price()
 
     def should_be_send_product_name(self):
         assert self.get_text_of_element(*ProductPageLocators.SEND_ADD_PRODUCT_NAME) == self.preview_product_name, \

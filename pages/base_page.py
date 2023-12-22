@@ -18,8 +18,9 @@ class BasePage():
         self.url = url
         self.browser.implicitly_wait(timeout)
 
-    def open(self):
-        self.browser.get(self.url)
+    def get_text_of_element(self, how, what):
+        text_of_element = self.browser.find_element(how, what).get_attribute('textContent')
+        return text_of_element
 
     def go_to_login_page(self):
         link = self.browser.find_element(*BasePageLocators.LOGIN_LINK)
@@ -29,8 +30,20 @@ class BasePage():
         link = self.browser.find_element(*BasePageLocators.BASKET_LINK)
         link.click()
 
-    def should_be_login_link(self):
-        assert self.is_element_present(*BasePageLocators.LOGIN_LINK), 'Ссылка на авторизацию не найдена'
+    def is_not_element_present(self, how, what, timeout=4):
+        try:
+            WebDriverWait(self.browser, timeout).until(EC.presence_of_element_located((how, what)))
+        except TimeoutException:
+            return True
+        return False
+
+    def is_disappeared(self, how, what, timeout=4):
+        try:
+            WebDriverWait(self.browser, timeout, 1, TimeoutException).\
+                until_not(EC.presence_of_element_located((how, what)))
+        except TimeoutException:
+            return False
+        return True
 
     def is_element_present(self, how, what):
         try:
@@ -38,6 +51,16 @@ class BasePage():
         except NoSuchElementException:
             return False
         return True
+
+    def open(self):
+        self.browser.get(self.url)
+
+    def should_be_login_link(self):
+        assert self.is_element_present(*BasePageLocators.LOGIN_LINK), 'Ссылка на авторизацию не найдена'
+
+    def should_be_authorized_user(self):
+        assert self.is_element_present(*BasePageLocators.USER_ICON), "Значок пользователя не отображается," \
+                                                                     " вероятно, неавторизованный пользователь"
 
     def solve_quiz_and_get_code(self):
         alert = self.browser.switch_to.alert
@@ -48,49 +71,14 @@ class BasePage():
         try:
             alert = self.browser.switch_to.alert
             alert_text = alert.text
-            print(f"Your code: {alert_text}")
+            print(f"Проверочный код: {alert_text}")
             alert.accept()
         except NoAlertPresentException:
-            print("No second alert presented")
+            print("Второе окно alert не представлено")
 
-    def solve_quiz_and_get_the_code_with_wait_method(self):
-        alert = self.browser.switch_to.alert
-        x = alert.text.split(' ')[2]
-        answer = str(math.log(abs((12 * math.sin(float(x))))))
-        alert.send_keys(answer)
-        alert.accept()
-        # Нестабильное время ожидания второго alert-окна
-        WebDriverWait(self.browser, 30).until(
-            EC.alert_is_present())
-        try:
-            alert = self.browser.switch_to.alert
-            alert_text = alert.text
-            print(f"Your code: {alert_text}")
-            alert.accept()
-        except NoAlertPresentException:
-            print("No second alert presented")
 
-    # Возвращает текст элемента
-    def get_text_of_element(self, how, what):
-        text_of_element = self.browser.find_element(how, what).get_attribute('textContent')
-        return text_of_element
 
-    # Проверяет, что элемент не появился на странице в течение заданного времени:
-    def is_not_element_present(self, how, what, timeout=4):
-        try:
-            WebDriverWait(self.browser, timeout).until(EC.presence_of_element_located((how, what)))
-        except TimeoutException:
-            return True
-        return False
 
-    # Проверяет, что элемент изчез в течение установленного времени:
-    def is_disappeared(self, how, what, timeout=4):
-        try:
-            WebDriverWait(self.browser, timeout, 1, TimeoutException).\
-                until_not(EC.presence_of_element_located((how, what)))
-        except TimeoutException:
-            return False
-        return True
 
 
 
